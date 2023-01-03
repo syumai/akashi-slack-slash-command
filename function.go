@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
-	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -15,6 +14,7 @@ import (
 	"github.com/bmf-san/akashigo/client"
 	"github.com/bmf-san/akashigo/stamp"
 	"github.com/bmf-san/akashigo/types"
+	stamp2 "github.com/go-slack-app-on-gae-boilerplate/internal/stamp"
 	"github.com/slack-go/slack"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
@@ -101,9 +101,10 @@ func Slash(w http.ResponseWriter, r *http.Request) {
 		model := &stamp.Stamp{
 			Client: apiClient,
 		}
+		typeStampText := stamp2.GetTypeStampTextByAlias(s.Text)
 		stamp, err := model.Stamp(stamp.StampParams{
 			Token:    apiClient.APIToken,
-			Type:     types.StampNumber(s.Text),
+			Type:     types.StampNumber(typeStampText),
 			Timezone: "+09:00",
 		})
 		if err != nil {
